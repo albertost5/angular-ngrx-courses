@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit {
         this.store.dispatch(AuthActions.login({user}));
 
         this.router.navigateByUrl('/courses');
-      }) 
+      })
     ).subscribe(
       noop,
       () => alert('Login failed!')
