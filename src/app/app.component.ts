@@ -3,8 +3,8 @@ import {select, Store} from "@ngrx/store";
 import {Observable} from "rxjs";
 import {NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router} from '@angular/router';
 import {AppState} from "./reducers";
-import {selectIsLoggedIn} from "./auth/auth.selectors";
-import {logout} from "./auth/auth.actions";
+import {isLoggedIn} from "./auth/auth.selectors";
+import {login, logout} from "./auth/auth.actions";
 
 @Component({
     selector: 'app-root',
@@ -26,6 +26,12 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
 
+      const userProfile = localStorage.getItem('user');
+
+      if (userProfile) {
+        this.store.dispatch(login({user: JSON.parse(userProfile)}))
+      }
+
       this.router.events.subscribe(event  => {
         switch (true) {
           case event instanceof NavigationStart: {
@@ -46,12 +52,12 @@ export class AppComponent implements OnInit {
       });
 
       this.isLoggedIn$ = this.store.pipe(
-        select(selectIsLoggedIn)
+        select(isLoggedIn)
       );
     }
 
     logout() {
-      this.store.dispatch(logout())
+      this.store.dispatch(logout());
     }
 
 }

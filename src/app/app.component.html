@@ -3,10 +3,12 @@
     <mat-sidenav #start>
         <mat-nav-list (click)="start.close()">
 
-            <a mat-list-item routerLink="/courses">
-                <mat-icon>library_books</mat-icon>
-                <span>Courses</span>
-            </a>
+            @if(isLoggedIn$ | async) {
+              <a mat-list-item routerLink="/courses">
+                  <mat-icon>library_books</mat-icon>
+                  <span>Courses</span>
+              </a>
+            }
 
             @if(!(isLoggedIn$ | async)) {
               <a mat-list-item routerLink="/login">
