@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {compareCourses, Course} from '../model/course';
+import {Course} from '../model/course';
 import {Observable} from "rxjs";
 import {defaultDialogConfig} from '../shared/default-dialog-config';
 import {EditCourseDialogComponent} from '../edit-course-dialog/edit-course-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
-import {map, shareReplay} from 'rxjs/operators';
-import {CoursesHttpService} from '../services/courses-http.service';
-
+import {MatDialog} from '@angular/material/dialog';
+import {AppState} from "../../reducers";
+import {select, Store} from "@ngrx/store";
+import {selectAdvancedCourses, selectBeginnersCourses, selectPromotionTotal} from "../courses.selectors";
 
 
 @Component({
@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit {
 
     constructor(
       private dialog: MatDialog,
-      private coursesHttpService: CoursesHttpService) {
+      private store: Store<AppState>) {
 
     }
 
@@ -36,46 +36,28 @@ export class HomeComponent implements OnInit {
       this.reload();
     }
 
-  reload() {
-
-    const courses$ = this.coursesHttpService.findAllCourses()
-      .pipe(
-        map(courses => courses.sort(compareCourses)),
-        shareReplay()
+    reload() {
+      this.beginnerCourses$ = this.store.pipe(
+        select(selectBeginnersCourses)
       );
 
-    this.loading$ = courses$.pipe(map(courses => !!courses));
-
-    this.beginnerCourses$ = courses$
-      .pipe(
-        map(courses => courses.filter(course => course.category == 'BEGINNER'))
+      this.advancedCourses$ = this.store.pipe(
+        select(selectAdvancedCourses)
       );
 
-
-    this.advancedCourses$ = courses$
-      .pipe(
-        map(courses => courses.filter(course => course.category == 'ADVANCED'))
+      this.promoTotal$ = this.store.pipe(
+        select(selectPromotionTotal)
       );
+    }
 
-    this.promoTotal$ = courses$
-        .pipe(
-            map(courses => courses.filter(course => course.promo).length)
-        );
+    onAddCourse() {
+      const dialogConfig = defaultDialogConfig();
 
-  }
+      dialogConfig.data = {
+        dialogTitle:"Create Course",
+        mode: 'create'
+      };
 
-  onAddCourse() {
-
-    const dialogConfig = defaultDialogConfig();
-
-    dialogConfig.data = {
-      dialogTitle:"Create Course",
-      mode: 'create'
-    };
-
-    this.dialog.open(EditCourseDialogComponent, dialogConfig);
-
-  }
-
-
+      this.dialog.open(EditCourseDialogComponent, dialogConfig);
+    }
 }
