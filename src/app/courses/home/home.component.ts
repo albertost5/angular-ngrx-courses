@@ -18,18 +18,12 @@ import {selectAdvancedCourses, selectBeginnersCourses, selectPromotionTotal} fro
 export class HomeComponent implements OnInit {
 
     promoTotal$: Observable<number>;
-
-    loading$: Observable<boolean>;
-
     beginnerCourses$: Observable<Course[]>;
-
     advancedCourses$: Observable<Course[]>;
-
 
     constructor(
       private dialog: MatDialog,
       private store: Store<AppState>) {
-
     }
 
     ngOnInit() {

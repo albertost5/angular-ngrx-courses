@@ -25,7 +25,6 @@ import {CoursesResolver} from "./courses.resolver";
 import {EffectsModule} from "@ngrx/effects";
 import {CoursesEffect} from "./courses.effect";
 import {StoreModule} from "@ngrx/store";
-import * as fromAuth from "../auth/reducers";
 import {coursesFeatureKey, coursesReducer} from "./reducers/courses.reducers";
 
 
