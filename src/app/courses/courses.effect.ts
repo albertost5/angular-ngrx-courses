@@ -19,4 +19,11 @@ export class CoursesEffect {
       map(courses => allCoursesLoaded({courses})),
     )
   });
+
+  updateCourse$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CoursesActions.courseUpdated),
+      switchMap(action => this.coursesService.saveCourse(action.update.id, action.update.changes))
+    )
+  }, { dispatch: false })
 }
